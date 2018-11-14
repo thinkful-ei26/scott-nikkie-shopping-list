@@ -35,6 +35,9 @@ app.get('/shopping-list', (req, res) => {
   res.json(ShoppingList.get());
 });
 
+// when new recipe added, ensure has required fields. if not,
+// log error and return 400 status code with hepful message.
+// if okay, add new item, and return it with a status 201.
 app.post('/shopping-list', jsonParser, (req, res) => {
   // ensure `name` and `budget` are in request body
   const requiredFields = ['name', 'budget'];
@@ -51,6 +54,11 @@ app.post('/shopping-list', jsonParser, (req, res) => {
   res.status(201).json(item);
 });
 
+app.delete('/shopping-list/:id', (req, res) => {
+  ShoppingList.delete(req.params.id);
+  console.log(`Deleted shopping list item \`${req.params.id}\``);
+  res.status(204).end();
+});
 
 app.get('/recipes', (req, res) => {
   res.json(Recipes.get());
@@ -70,6 +78,12 @@ app.post('/recipes', jsonParser, (req, res) => {
 
   const item = Recipes.create(req.body.name, req.body.ingredients);
   res.status(201).json(item);
+});
+
+app.delete('/recipes/:id', (req, res) => {
+  Recipes.delete(req.params.id);
+  console.log(`Deleted recipe item \`${req.params.id}\``);
+  res.status(204).end();
 });
 
 app.listen(process.env.PORT || 8080, () => {
